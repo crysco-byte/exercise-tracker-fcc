@@ -57,7 +57,7 @@ app.post("/api/exercise/new-user", (req, res) => {
         });
         newUser.save((err, data) => {
           if (err) return res.send(err);
-          res.json({ username: data.username, '_id': data["_id"] });
+          res.json({ username: data.username, _id: data["_id"] });
         });
       }
     });
@@ -77,7 +77,10 @@ app.post("/api/exercise/add", (req, res) => {
           doc.log.push({
             description: description,
             duration: duration,
-            date: new Date(`${date}T00:00:00`).toDateString(),
+            date:
+              date == null
+                ? new Date().toDateString()
+                : new Date(`${date}T00:00:00`).toDateString(),
           });
           doc.count++;
           doc.save((err, data) => {
@@ -153,4 +156,13 @@ app.get("/api/exercise/log", (req, res) => {
     // SEND IT
     res.send(newDoc);
   });
+});
+// GET ALL USERS
+app.get("/api/exercise/users", (req, res) => {
+  userModel
+    .find({ username: /.+/ })
+    .then((users) => {
+      res.send(users);
+    })
+    .catch((err) => res.send(err));
 });
