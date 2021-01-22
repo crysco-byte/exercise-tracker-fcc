@@ -57,7 +57,7 @@ app.post("/api/exercise/new-user", (req, res) => {
         });
         newUser.save((err, data) => {
           if (err) return res.send(err);
-          res.json({ username: data.username, id: data["_id"] });
+          res.json({ username: data.username, '_id': data["_id"] });
         });
       }
     });
