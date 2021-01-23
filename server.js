@@ -123,7 +123,7 @@ app.get("/api/exercise/users", (req, res) => {
 // USER LOG FUNCTION
 const getLogs = (doc, fDate, tDate, lDoc, uid) => {
   let resultDocument = {};
-  if (fDate != null && toDate != null) {
+  if (fDate != null && tDate != null) {
     fDate += "t00:00:00";
     tDate += "t00:00:00";
     const fMili = new Date(fDate).getTime(),
