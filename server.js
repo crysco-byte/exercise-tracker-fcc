@@ -106,13 +106,13 @@ app.post("/api/exercise/add", (req, res) => {
 // GET USER LOG
 app.get("/api/exercise/log", (req, res) => {
   let { userId: uid, from: fromDate, to: toDate, limit: limitDocs } = req.query;
-  fromDate += "T00:00:00";
-  toDate += "T00:00:00";
   userModel.findById(uid, (err, doc) => {
     if (err) return res.send(err);
     let newDoc = {};
     // NARROW BY DATE RANGE
     if (fromDate != null && toDate != null) {
+      fromDate += "T00:00:00";
+      toDate += "T00:00:00";
       const fromMili = new Date(fromDate).getTime(),
         toMili = new Date(toDate).getTime();
       const log = doc.log.filter((i) => {
@@ -128,6 +128,7 @@ app.get("/api/exercise/log", (req, res) => {
         log: log,
       };
     } else if ((fromDate != null) & (toDate == null)) {
+      fromDate += "T00:00:00";
       const fromMili = new Date(fromDate).getTime();
       const log = doc.log.filter((i) => {
         const dateMili = new Date(i.date).getTime();
@@ -141,6 +142,7 @@ app.get("/api/exercise/log", (req, res) => {
         log: log,
       };
     } else if ((fromDate == null) & (toDate != null)) {
+      toDate += "T00:00:00";
       const toMili = new Date(toDate).getTime();
       const log = doc.log.filter((i) => {
         const dateMili = new Date(i.date).getTime();
