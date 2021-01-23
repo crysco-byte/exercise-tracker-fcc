@@ -107,65 +107,8 @@ app.post("/api/exercise/add", (req, res) => {
 app.get("/api/exercise/log", (req, res) => {
   let { userId: uid, from: fromDate, to: toDate, limit: limitDocs } = req.query;
   userModel.findById(uid, (err, doc) => {
-    if (err) return res.send(err);
-    let newDoc = {};
-    // NARROW BY DATE RANGE
-    if (fromDate != null && toDate != null) {
-      fromDate += "T00:00:00";
-      toDate += "T00:00:00";
-      const fromMili = new Date(fromDate).getTime(),
-        toMili = new Date(toDate).getTime();
-      const log = doc.log.filter((i) => {
-        const dateMili = new Date(i.date).getTime();
-        return dateMili >= fromMili && dateMili <= toMili;
-      });
-      newDoc = {
-        _id: uid,
-        username: doc.username,
-        count: log.length,
-        from: new Date(fromDate).toDateString(),
-        to: new Date(toDate).toDateString(),
-        log: log,
-      };
-    } else if ((fromDate != null) & (toDate == null)) {
-      fromDate += "T00:00:00";
-      const fromMili = new Date(fromDate).getTime();
-      const log = doc.log.filter((i) => {
-        const dateMili = new Date(i.date).getTime();
-        return dateMili >= fromMili;
-      });
-      newDoc = {
-        _id: uid,
-        username: doc.username,
-        count: log.length,
-        from: new Date(fromDate).toDateString(),
-        log: log,
-      };
-    } else if ((fromDate == null) & (toDate != null)) {
-      toDate += "T00:00:00";
-      const toMili = new Date(toDate).getTime();
-      const log = doc.log.filter((i) => {
-        const dateMili = new Date(i.date).getTime();
-        return dateMili <= toMili;
-      });
-      newDoc = {
-        _id: uid,
-        username: doc.username,
-        count: log.length,
-        to: new Date(toDate).toDateString(),
-        log: log,
-      };
-    } else if ((limitDocs == null) & (toDate == null) & (fromDate == null)) {
-      res.send(doc);
-    }
-    // SET LOG LIMIT
-    if (limitDocs != null) {
-      for (let i = newDoc.log.length; i > parseInt(limitDocs); i--) {
-        newDoc.log.pop();
-      }
-    }
-    // SEND IT
-    res.send(newDoc);
+    if (err) return console.log(err);
+    res.json(doc, fromDate, toDate, limitDocs, uid);
   });
 });
 // GET ALL USERS
@@ -177,3 +120,62 @@ app.get("/api/exercise/users", (req, res) => {
     })
     .catch((err) => res.send(err));
 });
+// USER LOG FUNCTION
+const getLogs = (doc, fDate, tDate, lDoc, uid) => {
+  let resultDocument = {};
+  if (fDate != null && toDate != null) {
+    fDate += "t00:00:00";
+    tDate += "t00:00:00";
+    const fMili = new Date(fDate).getTime(),
+      tMili = new Date(tMili).getTime();
+    let filteredLog = doc.log.filter((i) => {
+      let dMili = new Date(i.date);
+      return dMili >= fMili && dMili <= tMili;
+    });
+    resultDocument = {
+      _id: uid,
+      username: doc.username,
+      count: filteredLog.length,
+      from: new Date(fDate).toDateString(),
+      to: new Date(tDate).toDateString(),
+      log: filteredLog,
+    };
+  } else if (fDate != null && tDate == null) {
+    let resultDocument = {};
+    fDate += "t00:00:00";
+    const fMili = new Date(fDate).getTime();
+    let filteredLog = doc.log.filter((i) => {
+      let dMili = new Date(i.date);
+      return dMili >= fMili;
+    });
+    resultDocument = {
+      _id: uid,
+      username: doc.username,
+      count: filteredLog.length,
+      from: new Date(fDate).toDateString(),
+      log: filteredLog,
+    };
+  } else if ((fDate == null) & (tDate != null)) {
+    tDate += "t00:00:00";
+    const tMili = new Date(tMili).getTime();
+    let filteredLog = doc.log.filter((i) => {
+      let dMili = new Date(i.date);
+      return dMili <= tMili;
+    });
+    resultDocument = {
+      _id: uid,
+      username: doc.username,
+      count: filteredLog.length,
+      to: new Date(tDate).toDateString(),
+      log: filteredLog,
+    };
+  } else {
+    resultDocument = {
+      _id: uid,
+      username: doc.username,
+      count: doc.log.length,
+      log: doc.log,
+    };
+  }
+  return resultDocument;
+};
