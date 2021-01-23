@@ -108,7 +108,7 @@ app.get("/api/exercise/log", (req, res) => {
   let { userId: uid, from: fromDate, to: toDate, limit: limitDocs } = req.query;
   userModel.findById(uid, (err, doc) => {
     if (err) return console.log(err);
-    res.json(doc, fromDate, toDate, limitDocs, uid);
+    res.json(getLogs(doc, fromDate, toDate, limitDocs, uid));
   });
 });
 // GET ALL USERS
@@ -177,8 +177,8 @@ const getLogs = (doc, fDate, tDate, lDoc, uid) => {
       log: doc.log,
     };
   }
-  if (lDocs != null) {
-    for (let i = resultDocument.log.length; i > parseInt(lDocs); i--) {
+  if (lDoc != null) {
+    for (let i = resultDocument.log.length; i > lDoc; i--) {
       resultDocument.log.pop();
     }
   }
