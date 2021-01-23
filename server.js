@@ -177,5 +177,10 @@ const getLogs = (doc, fDate, tDate, lDoc, uid) => {
       log: doc.log,
     };
   }
+  if (limitDocs != null) {
+    for (let i = newDoc.log.length; i > parseInt(limitDocs); i--) {
+      newDoc.log.pop();
+    }
+  }
   return resultDocument;
 };
