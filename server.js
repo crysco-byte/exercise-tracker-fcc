@@ -76,7 +76,7 @@ app.post("/api/exercise/add", (req, res) => {
           if (err) return res.send(`an error ocurred:${err}`);
           doc.log.push({
             description: description,
-            duration: duration,
+            duration: Number(duration),
             date:
               date == ""
                 ? new Date().toDateString()
@@ -93,7 +93,7 @@ app.post("/api/exercise/add", (req, res) => {
               date == ""
                 ? new Date().toDateString()
                 : new Date(`${date}T00:00:00`).toDateString(),
-            duration: duration,
+            duration: Number(duration),
             description: description,
           });
         });
