@@ -78,7 +78,7 @@ app.post("/api/exercise/add", (req, res) => {
             description: description,
             duration: duration,
             date:
-              date == null
+              date == ""
                 ? new Date().toDateString()
                 : new Date(`${date}T00:00:00`).toDateString(),
           });
@@ -86,7 +86,16 @@ app.post("/api/exercise/add", (req, res) => {
           doc.save((err, data) => {
             if (err) return err;
           });
-          res.send(doc);
+          res.send({
+            _id: doc["_id"],
+            username: doc.username,
+            date:
+              date == ""
+                ? new Date().toDateString()
+                : new Date(`${date}T00:00:00`).toDateString(),
+            duration: duration,
+            description: description,
+          });
         });
       })
       .catch((err) => res.send("Invalid Username"));
