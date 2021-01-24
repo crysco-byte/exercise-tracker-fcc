@@ -123,11 +123,12 @@ app.get("/api/exercise/users", (req, res) => {
 // USER LOG FUNCTION
 const getLogs = (doc, fDate, tDate, lDoc, uid) => {
   let resultDocument = {};
+  console.log(fDate, tDate);
   if (fDate != null && tDate != null) {
-    fDate += "t00:00:00";
-    tDate += "t00:00:00";
+    fDate += "T00:00:00";
+    tDate += "T00:00:00";
     const fMili = new Date(fDate).getTime(),
-      tMili = new Date(tMili).getTime();
+      tMili = new Date(tDate).getTime();
     let filteredLog = doc.log.filter((i) => {
       let dMili = new Date(i.date);
       return dMili >= fMili && dMili <= tMili;
@@ -141,8 +142,7 @@ const getLogs = (doc, fDate, tDate, lDoc, uid) => {
       log: filteredLog,
     };
   } else if (fDate != null && tDate == null) {
-    let resultDocument = {};
-    fDate += "t00:00:00";
+    fDate += "T00:00:00";
     const fMili = new Date(fDate).getTime();
     let filteredLog = doc.log.filter((i) => {
       let dMili = new Date(i.date);
@@ -156,8 +156,8 @@ const getLogs = (doc, fDate, tDate, lDoc, uid) => {
       log: filteredLog,
     };
   } else if ((fDate == null) & (tDate != null)) {
-    tDate += "t00:00:00";
-    const tMili = new Date(tMili).getTime();
+    tDate += "T00:00:00";
+    const tMili = new Date(tDate).getTime();
     let filteredLog = doc.log.filter((i) => {
       let dMili = new Date(i.date);
       return dMili <= tMili;
